@@ -1,12 +1,11 @@
 from collections import defaultdict as ddict
-from p1a import freq
 
 def freq_check(start_freq: int, inlist: list):
     seen = ddict(lambda :0)
     curr_freq = start_freq
     seen[curr_freq] += 1
     while seen[curr_freq] < 2:
-        curr_freq = freq(curr_freq, inlist[:1])
+        curr_freq += inlist[0]
         inlist.append(inlist.pop(0))
         seen[curr_freq] += 1
     return curr_freq
