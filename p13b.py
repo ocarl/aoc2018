@@ -28,6 +28,9 @@ class Cart:
         self.opponents = []
         Cart.carts.append(self)
 
+    def __repr__(self):
+        return f'{self.x}, {self.y}'
+
     def straight(self):
         pass
 
@@ -58,12 +61,20 @@ class Cart:
                 self.dir = turn_left[self.dir]
 
 
-test_input = r'''/->-\        
-|   |  /----\
-| /-+--+-\  |
-| | |  | v  |
-\-+-/  \-+--/
-  \------/   '''
+test_input = r'''/>-<\  
+|   |  
+| /<+-\
+| | | v
+\>+</ |
+  |   ^
+  \<->/'''
+
+#test_input = r'''/->-\
+#|   |  /----\
+#| /-+--+-\  v
+#^ | |  | v  |
+#\-+-/  \-+--/
+#  \--->--/   '''
 
 dir_to_abs = {'v': 's', '<': 'w', '^': 'n', '>': 'e'}
 
@@ -84,13 +95,20 @@ with open('13.txt') as f:
         carts_list = Cart.carts.copy()
         carts_list.pop(i)
         cart.opponents = carts_list
-    crashed = False
 
-    while not crashed:
-        for i, cart in enumerate(Cart.carts):
+    while len(Cart.carts) > 1:
+        cart_list = Cart.carts
+        for i, cart in enumerate(cart_list):
             cart.tick()
             # detect collisions
-            for other_cart in cart.opponents:
+            for j, other_cart in enumerate(cart.opponents):
                 if (other_cart.x, other_cart.y) == (cart.x, cart.y):
-                    crashed = True
-                    print((cart.x,cart.y))
+                    cart.opponents.pop(j)
+                    Cart.carts = cart.opponents
+                    for i, cart in enumerate(Cart.carts):
+                        carts_list = Cart.carts.copy()
+                        carts_list.pop(i)
+                        cart.opponents = carts_list
+                    break
+
+    print((Cart.carts[0].x, Cart.carts[0].y, Cart.carts[0].dir))
